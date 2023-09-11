@@ -1,4 +1,8 @@
 from selenium.common.exceptions import NoSuchElementException
+import time
+import math
+import pyperclip
+from selenium.common.exceptions import NoAlertPresentException
 url = "http://selenium1py.pythonanywhere.com/"
 class BasePage():
     #метод init
@@ -16,3 +20,23 @@ class BasePage():
         except (NoSuchElementException):
             return False
         return True
+    def solve_and_get_code(self):
+        #обращаемся к всплывающему окну
+        alert = self.browser.switch_to.alert
+        #находим значение, которое необходимо подставить с помощью сплит
+        value = alert.text.split(" ")[2]
+        print(value)
+        answer = str(math.log(abs((12 * math.sin(float(value))))))
+        print(answer)
+        pyperclip.copy(answer)
+        alert.send_keys(answer)
+        alert.accept()
+        try:
+            alert = self.browser.switch_to.alert
+            alert_text = alert.text
+            print(f"Your code: {alert_text}")
+            alert.accept()
+        except NoAlertPresentException:
+            print("No second alert presented")
+
+
